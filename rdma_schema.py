@@ -49,9 +49,20 @@ Notes
 - Les couleurs distinguent paquets et chemins ; les durées varient pour simuler des arrivées désordonnées.
 - Le réassemblage place d’abord les paquets dans une rangée d’arrivée arbitraire, puis les ordonne 1..N.
 - La jauge de bande passante (60% → 95%) illustre le gain effectif.
+
+Installation rapide ManimCE (environnement Python 3.9+ recommandé)
+- 1) Créer un venv: `python -m venv .venv && source .venv/bin/activate` (Windows: `.venv\\Scripts\\activate`)
+- 2) Installer ManimCE: `pip install manim`
+- 3) (Optionnel mais utile) FFMPEG pour export vidéo. Sur Windows/Mac, `pip install imageio-ffmpeg` suffit souvent.
+- 4) Tester: `manim -v WARNING -qh --version`
+- 5) Rendu de cette scène: `manim -pqh rdma_schema.py RDMAOverEthernet`
+
+Exécution directe du script
+- Vous pouvez lancer `python rdma_schema.py` pour rendre automatiquement la scène (aperçu activé) sans utiliser la CLI Manim.
 """
 
 from manim import *
+import numpy as np
 
 
 class RDMAOverEthernet(Scene):
@@ -106,7 +117,7 @@ class RDMAOverEthernet(Scene):
             "s6": np.array([ 2.2, -1.4, 0.0]),
         }
 
-        def make_switch(name: str, p: np.ndarray, color=GRAY_B):
+        def make_switch(name: str, p: np.ndarray, color=GREY_B):
             sw = Square(side_length=0.4)
             sw.set_stroke(color=GREY_B, width=2)
             sw.set_fill(color=GREY_E, opacity=0.2)
@@ -309,3 +320,10 @@ class RDMAOverEthernet(Scene):
             run_time=1.0,
         )
         self.wait(0.6)
+
+if __name__ == "__main__":
+    # Exécution directe: rend la scène avec prévisualisation et qualité moyenne
+    from manim import tempconfig
+
+    with tempconfig({"quality": "medium_quality", "preview": True}):
+        RDMAOverEthernet().render()
